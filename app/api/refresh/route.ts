@@ -1,15 +1,25 @@
 import crypto from "crypto";
 
-export async function GET(request: Request) {
+import { kv } from "@vercel/kv";
+
+export async function GET() {
   const res = await fetch(
     "https://www.brammibalsdonuts.de/wp-content/uploads/2023"
   );
+
+  const lastHash = await kv.get("lastHash");
 
   const html = await res.text();
 
   const hashedHtml = createHash(html);
 
-  return new Response(String(html.length));
+  if (!lastHash || lastHash !== hashedHtml) {
+    await kv.set("lastHash", hashedHtml);
+    await kv.set("lastChange", new Date());
+  }
+
+  await kv.set("lastCheck", new Date());
+  return new Response("", { status: 200 });
 }
 
 function createHash(text: string) {
