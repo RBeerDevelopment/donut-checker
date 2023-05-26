@@ -3,6 +3,16 @@ import crypto from "crypto";
 import { kv } from "@vercel/kv";
 
 export async function GET() {
+  await refreshDonutData();
+  return new Response("", { status: 200 });
+}
+
+export async function POST() {
+  await refreshDonutData();
+  return new Response("", { status: 200 });
+}
+
+async function refreshDonutData() {
   const res = await fetch(
     "https://www.brammibalsdonuts.de/wp-content/uploads/2023"
   );
