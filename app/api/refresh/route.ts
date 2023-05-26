@@ -16,6 +16,8 @@ export async function GET() {
   if (!lastHash || lastHash !== hashedHtml) {
     await kv.set("lastHash", hashedHtml);
     await kv.set("lastChange", new Date());
+
+    callWebhook();
   }
 
   await kv.set("lastCheck", new Date());
@@ -26,4 +28,9 @@ function createHash(text: string) {
   const hash = crypto.createHash("sha256");
   hash.update(text);
   return hash.digest("hex");
+}
+
+function callWebhook() {
+  if (!process.env.WEBHOOK_URL) return console.log("No webhook url set");
+  fetch(process.env.WEBHOOK_URL, { method: "POST" });
 }
