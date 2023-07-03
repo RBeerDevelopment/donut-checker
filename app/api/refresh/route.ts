@@ -1,6 +1,6 @@
 import crypto from "crypto";
-
 import { kv } from "@vercel/kv";
+import { env } from "@/env.mjs";
 
 export async function GET() {
   await refreshDonutData();
@@ -13,9 +13,7 @@ export async function POST() {
 }
 
 async function refreshDonutData() {
-  const res = await fetch(
-    "https://www.brammibalsdonuts.de/wp-content/uploads/2023"
-  );
+  const res = await fetch(env.WEBSITE_URL);
 
   const lastHash = await kv.get("lastHash");
 
@@ -41,6 +39,6 @@ function createHash(text: string) {
 }
 
 function callWebhook() {
-  if (!process.env.WEBHOOK_URL) return console.log("No webhook url set");
-  fetch(process.env.WEBHOOK_URL, { method: "POST" });
+  if (!env.WEBHOOK_URL) return;
+  fetch(env.WEBHOOK_URL, { method: "POST" });
 }

@@ -1,7 +1,8 @@
+import { env } from "@/env.mjs";
 import "./globals.css";
 
 export const metadata = {
-  title: "Donut Checker",
+  title: env.NEXT_PUBLIC_SITE_NAME,
 };
 
 export default function RootLayout({
